@@ -1,8 +1,7 @@
-import Header from "./components/Header"
-import Sidebar from "./components/Sidebar"
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 
 function App() {
-
   return (
     <>
       <Header />
@@ -12,9 +11,8 @@ function App() {
         </div>
         <Sidebar />
       </div>
-      
     </>
-  )
+  );
 }
 
-export default App
+export default App;

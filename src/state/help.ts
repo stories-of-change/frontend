@@ -45,6 +45,6 @@ export const useHelpStore = create<HelpState>()(
           helpTitle: title,
         })),
     }),
-    { enabled: true }
-  )
+    { enabled: true },
+  ),
 );
