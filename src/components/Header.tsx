@@ -3,9 +3,22 @@ import support from "../assets/support.svg";
 import guide from "../assets/guide.svg";
 import share from "../assets/share.svg";
 
-function HeaderButton({ text, icon }: { text: string; icon: string }) {
+import { useHelpStore } from "../state/help";
+
+function HeaderButton({
+  text,
+  icon,
+  onClick,
+}: {
+  text: string;
+  icon: string;
+  onClick?: () => void;
+}) {
   return (
-    <button className="pointer flex gap-2 rounded-3xl border border-[#babfc3] px-4 py-3 text-base font-medium ">
+    <button
+      onClick={onClick}
+      className="pointer flex gap-2 rounded-3xl border border-[#babfc3] px-4 py-3 text-base font-medium "
+    >
       <img src={icon} alt={`header button for ${text}`} />
       <span>{text}</span>
     </button>
@@ -13,8 +26,10 @@ function HeaderButton({ text, icon }: { text: string; icon: string }) {
 }
 
 export default function Header() {
+  const { toggleHelpModal } = useHelpStore();
+
   return (
-    <div className="font-urbanist flex h-[70px] items-center justify-between bg-white p-6 shadow">
+    <div className="z-20 flex h-[70px] items-center justify-between bg-white p-6 font-urbanist shadow">
       <span className="flex gap-4">
         <div className="h-[30px]">
           <img src={logo} alt="stories of change logo" />
@@ -27,12 +42,12 @@ export default function Header() {
         <div>menu btn</div>
       </span>
 
-      <span className="flex gap-4">
+      <span className="hidden gap-4 lg:flex">
         <div>
           <HeaderButton text="Support" icon={support} />
         </div>
         <div>
-          <HeaderButton text="Guide" icon={guide} />
+          <HeaderButton text="Guide" icon={guide} onClick={toggleHelpModal} />
         </div>
         <div>
           <HeaderButton text="Share" icon={share} />

@@ -1,0 +1,95 @@
+.map-container {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  /* align-items: center; */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.map {
+  background-color: "white";
+  width: "100%";
+  cursor: pointer;
+}
+
+#legend {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  display: none;
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 8px 10px;
+  min-width: 150px;
+  color: #000;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.925);
+}
+
+#tooltip .tags {
+  display: flex;
+  margin: 14px 0;
+  list-style: none;
+}
+
+#tooltip .tags li {
+  color: rgba(0, 0, 0, 0.48);
+  text-align: center;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 10px */
+  border-radius: 64px;
+  border: 1px solid rgba(252, 113, 74, 0.2);
+  background: #fff;
+  padding: 4px 6px 5px 6px;
+  margin-right: 7px;
+}
+
+.tooltip-temp-div {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 12px 0;
+}
+
+.tooltip-temp-div h4 {
+  color: #fd7c37;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  /* 10px */
+  text-transform: uppercase;
+  line-height: 100%;
+}
+
+.tooltip-row {
+  gap: 0.5rem;
+}
+
+.tooltip-title {
+  color: #000;
+  font-weight: 600;
+}
+
+#tooltip-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.tooltip-temp {
+  color: rgb(0, 0, 0, 0.64);
+}
+
+.tooltip-period {
+  font-size: 40px;
+  color: rgba(0, 0, 0, 0.24);
+}
