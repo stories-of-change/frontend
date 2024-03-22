@@ -8,7 +8,7 @@ import { create } from "zustand";
 
 interface MapState {
   districtId: string | null;
-  name: string;
+  dataset: string;
   emission: string;
   timeline: string;
 
@@ -20,7 +20,7 @@ interface MapState {
 
 export const useMapStore = create<MapState>()((set) => ({
   districtId: null,
-  name: "Surface Air Maximum",
+  dataset: "tasmax",
   emission: "ssp245",
   timeline: "1995-2014",
 
@@ -29,9 +29,9 @@ export const useMapStore = create<MapState>()((set) => ({
       districtId: districtId,
     })),
 
-  changeDataset: (name: string) =>
+  changeDataset: (dataset: string) =>
     set(() => ({
-      name: name,
+      dataset: dataset,
     })),
 
   changeEmission: (emission: string) =>

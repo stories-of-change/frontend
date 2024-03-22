@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 // import "./Map.css";
 
 import * as d3 from "d3";
@@ -10,16 +8,22 @@ import * as districtGeoData from "../data/bd_districts.geo.json";
 import * as minMaxData from "../data/wb_clim_var_minmax.json";
 import * as worldBankData from "../data/world_bank_data.json";
 import riversGeoData from "../data/bd_rivers.geo.json";
+import districtMetaData from "../data/district_meta.json";
 
 // some css properties are added thru classes, those should be using tailwind
 // some properties are added using js by fetching their id, those can stay as it is
 
 const getClimateVariable = (
-  district,
-  variable,
-  dataType,
-  timeRange,
-  climateChange,
+  district: any,
+  variable: "cdd65" | "hd35" | "hd40" | "hd45",
+  dataType: "climatology" | "anomaly",
+  timeRange:
+    | "1995-2014"
+    | "2020-2039"
+    | "2040-2059"
+    | "2060-2079"
+    | "2080-2099",
+  climateChange: any,
 ) => {
   /**
    * Valid values for each:
@@ -43,27 +47,9 @@ export default function Map() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   const datasetType = "climatology";
-  const datasetName = "Surface Air Maximum";
+  const datasetName = "tasmax";
   const datasetEmission = "ssp245";
   const datasetTimeline = "1995-2014";
-
-  // TODO: gotta remove this from this file
-  const datasetNameMap = {
-    "Cooling Degree Days": "cdd65",
-    "Hot Days Over 35°C": "hd35",
-    "Hot Days Over 40°C": "hd40",
-    "Hot Days Over 45°C": "hd45",
-    "Precipitation Percent Change": "prpercnt",
-    "Above 50mm": "r50mm",
-    "Largest 1-Day Precipitation": "rx1day",
-    "Largest 5-Day Precipitation": "rx5day",
-    "Summer Days": "sd",
-    "Surface Air Maximum": "tasmax",
-    "Surface Air Minimum": "tasmin",
-    "Maximum Over 26°C": "tr26",
-    "Maximum Over 29°C": "tr29",
-    "Single Day Maximum": "txx",
-  };
 
   const ref = useD3(
     (svg: any) => {
@@ -88,10 +74,6 @@ export default function Map() {
         // minTemperature: "minTemperature",
         // hotTropical: "nDaysTminMoreThan26",
       };
-
-      // Create a reversed version of the RdYlBu color scheme
-      const reversedRdYlBu = (t: number) => d3.interpolateRdYlBu(1 - t);
-      const reversedRdBu = (t: number) => d3.interpolateRdBu(1 - t);
 
       const variableColourScheme = {
         // Hot Weather
@@ -160,8 +142,8 @@ export default function Map() {
 
       const colorScale = d3
         .scaleSequential()
-        .domain(variableDomain[datasetNameMap[datasetName]])
-        .interpolator(variableColourScheme[datasetNameMap[datasetName]]);
+        .domain(variableDomain[datasetName])
+        .interpolator(variableColourScheme[datasetName]);
 
       const path = d3.geoPath().projection(projection);
 
@@ -178,7 +160,7 @@ export default function Map() {
 
       let legendScale = d3
         .scaleLinear()
-        .domain(variableDomain[datasetNameMap[datasetName]])
+        .domain(variableDomain[datasetName])
         .range([0, 200]);
 
       // Create a colour horizontal gradient for the legend
@@ -195,28 +177,21 @@ export default function Map() {
       legendGradient
         .append("stop")
         .attr("offset", "0%")
-        .attr(
-          "stop-color",
-          colorScale(variableDomain[datasetNameMap[datasetName]][0]),
-        );
+        .attr("stop-color", colorScale(variableDomain[datasetName][0]));
       legendGradient
         .append("stop")
         .attr("offset", "50%")
         .attr(
           "stop-color",
           colorScale(
-            (variableDomain[datasetNameMap[datasetName]][0] +
-              variableDomain[datasetNameMap[datasetName]][1]) /
+            (variableDomain[datasetName][0] + variableDomain[datasetName][1]) /
               2,
           ),
         );
       legendGradient
         .append("stop")
         .attr("offset", "100%")
-        .attr(
-          "stop-color",
-          colorScale(variableDomain[datasetNameMap[datasetName]][1]),
-        );
+        .attr("stop-color", colorScale(variableDomain[datasetName][1]));
 
       // Draw the gradient rect
       legend
@@ -243,7 +218,7 @@ export default function Map() {
         .attr("x", 0)
         .attr("dy", "-0.5em")
         .attr("text-align", "center")
-        .text(variableLabelMap[datasetNameMap[datasetName]]);
+        .text(variableLabelMap[datasetName]);
 
       // svg.attr("width", 1280).attr("height", 1280);
 
@@ -286,7 +261,7 @@ export default function Map() {
         .attr("fill", (d) => {
           let value = getClimateVariable(
             d.properties["NAME_3"],
-            datasetNameMap[datasetName],
+            datasetName,
             datasetType,
             datasetTimeline,
             datasetEmission,
@@ -325,11 +300,11 @@ export default function Map() {
                             <h4>${datasetConfig["name"]}</h4>
                             <span class="tooltip-temp">${getClimateVariable(
                               d.properties["NAME_3"],
-                              datasetNameMap[datasetName],
+                              datasetName,
                               datasetType,
                               datasetTimeline,
                               datasetEmission,
-                            )} ${unitMap[datasetNameMap[datasetName]]}
+                            )} ${unitMap[datasetName]}
                             </span>
                         </div>
                                     </div >
@@ -356,7 +331,7 @@ export default function Map() {
           // Render out the district name to the district-info div
           d3.select(event.target).attr("stroke", "#000");
           d3.select(event.target).attr("stroke-width", "4");
-          generatedDistricts.districts.forEach((generatedD) => {
+          generatedDistricts.districts.forEach((generatedD: any) => {
             if (generatedD.name == d.properties.NAME_3) {
               handleDistrictIdChange(generatedD.id);
               setSelectedDistrict(generatedD.name);
@@ -386,7 +361,7 @@ export default function Map() {
             // NOTE: We select the parent #map-vis element as a reference point for the mouse
             // The transform is applied to the child #map-vis-group element
             svg.attr("transform", e.transform);
-          }),
+          }) as any,
       );
     },
     [datasetName, datasetEmission, datasetTimeline, selectedDistrict],
@@ -394,15 +369,23 @@ export default function Map() {
 
   return (
     <>
-      <div className="map-container relative flex justify-center">
+      <div className="map-container relative flex h-full justify-center bg-[#F1F2F4]">
         <div id="tooltip"></div>
-        <div id="legend" className="absolute right-0 top-2">
-          <svg id="legend-svg" width="240" height="80"></svg>
+        <div
+          id="legend"
+          className="absolute bottom-0 right-0 w-screen text-[.875rem] sm:top-2 sm:w-auto"
+        >
+          <svg
+            id="legend-svg"
+            width="240"
+            height="80"
+            className="m-4 rounded-[8px] bg-white"
+          ></svg>
         </div>
 
         <svg
           id="map-vis"
-          className="map h-screen"
+          className="map h-full"
           style={{
             width: "100%",
           }}
@@ -413,5 +396,4 @@ export default function Map() {
       </div>
     </>
   );
-  // return <p>map will be here</p>;
 }
